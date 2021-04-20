@@ -8,7 +8,9 @@ import { readRemoteFile } from 'react-papaparse';
 import './App.css';
 
 // Generates the points on the map
-function generateGraphicsLayerWithPoints(points) {
+function generateGraphicsLayerWithPoints(
+  points: Array<Array<[string, number, number]>>,
+) {
   const graphicsLayer = new GraphicsLayer();
   const simpleMarkerSymbol = {
     type: 'simple-marker',
@@ -48,16 +50,16 @@ function generateGraphicsLayerWithPoints(points) {
 // React function component
 function App() {
   const [csvData, setCSVData] = useState();
-  const [borderPoints, setBorderPoints] = useState([]);
+  const [borderPoints, setBorderPoints] = useState([[0]]);
 
   // Set ESRI configurations
   esriConfig.assetsPath = './assets';
-  esriConfig.apiKey = process.env.ESRI_API_KEY;
+  esriConfig.apiKey = process.env.ESRI_API_KEY || '';
 
   // Ref of map
   const mapDiv = useRef(null);
 
-  function logLocationData(csvData) {
+  function logLocationData(csvData: Array<[string, number, number]>) {
     if (csvData) {
       const austrianBorderPoints = csvData.filter((point) => point[0] === 'AT');
       console.log('Austrian border points: ', austrianBorderPoints);
@@ -74,8 +76,6 @@ function App() {
 
   function createBorder() {
     if (borderPoints) {
-      console.log('border points: ', borderPoints);
-
       const polyline = {
         type: 'polyline',
         paths: borderPoints,
