@@ -11,28 +11,31 @@ import './App.css';
 
 // Generates the points on the map
 function pointsGenerator(points) {
-  // console.log('points in: ', points);
-
+  console.log('points: ', points);
   const graphicsLayer = new GraphicsLayer();
-
   const simpleMarkerSymbol = {
     type: 'simple-marker',
-    color: [226, 119, 40], // Orange
+    color: [0, 0, 0],
+    size: 3,
     outline: {
-      color: [255, 255, 255], // White
+      color: [255, 255, 255],
       width: 1,
     },
   };
 
   if (points) {
+    // Add points to the graphics layer
     points.map((currentPoint) => {
       if (currentPoint[0] && currentPoint[1]) {
         graphicsLayer.add(
           new Graphic({
             geometry: {
               type: 'point',
-              longitude: currentPoint[0],
-              latitude: currentPoint[1],
+              longitude: currentPoint[1],
+              latitude: currentPoint[2],
+            },
+            attributes: {
+              countryCode: currentPoint[0],
             },
             symbol: simpleMarkerSymbol,
           }),
@@ -43,6 +46,12 @@ function pointsGenerator(points) {
   }
 
   return graphicsLayer;
+}
+
+async function logLocationData(graphicsLayer) {
+  // await graphicsLayer.load().then((data) => console.log('data: ', data));
+  // const layer = await graphicsLayer.load();
+  // console.log('layer in log: ', layer.graphics.items[0].geometry.longitude);
 }
 
 // React function component
@@ -59,7 +68,7 @@ function App() {
 
           // generates points -> array of arrays
           const points = results.data.map((currentPoint, index) => {
-            return [currentPoint[2], currentPoint[3]];
+            return [currentPoint[1], currentPoint[2], currentPoint[3]];
           });
           setCSVData(points);
         },
@@ -144,6 +153,8 @@ function App() {
 
       const layer = pointsGenerator(csvData);
       console.log('graphicsLayer: ', layer);
+
+      logLocationData(layer);
 
       map.addMany([layer]);
     }
