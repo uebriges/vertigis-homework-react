@@ -10,6 +10,8 @@ import './App.css';
 // Generates the points on the map
 function generateGraphicsLayerWithPoints(points) {
   const graphicsLayer = new GraphicsLayer();
+
+  // ----- Task 3: Change symbology of the CSV layer -----
   const simpleMarkerSymbol = {
     type: 'simple-marker',
     color: [0, 0, 0],
@@ -57,6 +59,7 @@ function App() {
   // Ref of map
   const mapDiv = useRef(null);
 
+  // ----- Task 4:  List data by attribute -----
   function logLocationData(csvData) {
     if (csvData) {
       const austrianBorderPoints = csvData.filter((point) => point[0] === 'AT');
@@ -72,10 +75,10 @@ function App() {
     }
   }
 
+  // ----- Bonus Task: Assemble a country outline -----
+  // Todo: Ordering points. Propably by using a geometryEngine and function nearestCoordinates()
   function createBorder() {
     if (borderPoints) {
-      console.log('border points: ', borderPoints);
-
       const polyline = {
         type: 'polyline',
         paths: borderPoints,
@@ -96,6 +99,7 @@ function App() {
     }
   }
 
+  // ----- Task 2: : Load the CSV Data into a map layer -----
   // Read the CSV file with points data
   useEffect(() => {
     readRemoteFile(
@@ -117,9 +121,7 @@ function App() {
 
   useEffect(() => {
     if (mapDiv.current) {
-      /**
-       * Initialize application
-       */
+      // ----- Task 1: Create a simple map -----
       const map = new ArcGISMap({
         basemap: 'gray-vector',
       });
@@ -131,7 +133,8 @@ function App() {
         zoom: 3,
       });
 
-      // Generate GraphicsLayer instance
+      // ----- Task 2: : Load the CSV Data into a map layer -----
+      // Draw points on a graphics layer
       const layer = generateGraphicsLayerWithPoints(csvData);
 
       // Log long, lat and country code to console
@@ -139,7 +142,6 @@ function App() {
 
       // Generate polyline for Austrian border
       const austrianBorderLine = createBorder();
-      console.log('austrian border: ', austrianBorderLine);
 
       layer.add(austrianBorderLine);
 
